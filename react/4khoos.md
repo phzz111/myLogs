@@ -1,19 +1,41 @@
 ### hooks
 
 **useState**
-useState不必把状态全部声明在组件的顶部
+useState 不必把状态全部声明在组件的顶部
 
- > Call useState at the top level of your component  
-  
-这句话指的是作用域的top level，所以useState不能放倒if条件判断，或者循环中。
- 
- 如果给useState传递函数，那么这个函数应该是个没有参数的纯函数。因为react在调用initializer function的时候是不会给你传参的。
+> Call useState at the top level of your component
 
- ```js
- const [state,setState] = useState(1)
- ```
+这句话指的是作用域的 top level，所以 useState 不能放倒 if 条件判断，或者循环中。
 
- set function 调用后不会立即更新，而是下一次渲染阶段更新。react底层有两个阶段【 commit render】
+如果给 useState 传递函数，那么这个函数应该是个没有参数的纯函数。因为 react 在调用 initializer function 的时候是不会给你传参的。
 
- 
+```js
+const [state, setState] = useState(1);
+```
+
+set function 调用后不会立即更新，而是下一次渲染阶段更新。react 底层有两个阶段【 commit render】
+
+**如果更新引用类型的值，必须传递一个新的引用**
+immutable state 不可变状态，意味着每一次传递的值是不可变的也是一次性的。
+所以变更数组、对象通常都是在新的数组、对象中解构再赋值
+
+```
+setObj((prev)=>({
+   ...prev,
+   a:1
+}))
+```
+
+**useEffect**
+
+用于处理副作用，但不强求，根据业务来。官方推荐，因为可以追踪。
+两个参数   
+- setup 因为useEffect的执行时机所以起名叫初始化（setup）
+- dependencies 必须是一个数组  
+
+1. 当我们通过useEffect注册了setup之后，会在每次挂载到页面中都会【异步】执行setup  
+2. 当依赖项发生变更的时候，useEffect会重新执行setup.当然依赖也得是react构建的数据，比如useState。
+3. 如果没有依赖项，和vue的onMounted很像。可以在里面获取dom，请求api
+4. 返回值是一个cleanup函数，用于清理副作用。比如事件绑定，计时器的清理。它在组件卸载时执行。
+
 

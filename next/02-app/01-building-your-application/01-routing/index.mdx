@@ -4,11 +4,11 @@ nav_title: Routing
 description: Learn the fundamentals of routing for front-end applications.
 ---
 
-The skeleton of every application is routing. This page will introduce you to the **fundamental concepts** of routing for the web and how to handle routing in Next.js.
+应用程序的骨架就是路由, 本页将向您介绍 **网络路由的基本概念** 以及如何在 Next.js 中处理路由。
 
-## Terminology
+## 术语
 
-First, you will see these terms being used throughout the documentation. Here's a quick reference:
+首先，您将看到这些术语在整个文档中被使用。以下是一个快速参考：
 
 <Image
   alt="Terminology for Component Tree"
@@ -18,78 +18,49 @@ First, you will see these terms being used throughout the documentation. Here's 
   height="832"
 />
 
-- **Tree:** A convention for visualizing a hierarchical structure. For example, a component tree with parent and children components, a folder structure, etc.
-- **Subtree:** Part of a tree, starting at a new root (first) and ending at the leaves (last).
-- **Root**: The first node in a tree or subtree, such as a root layout.
-- **Leaf:** Nodes in a subtree that have no children, such as the last segment in a URL path.
-
-<Image
-  alt="Terminology for URL Anatomy"
-  srcLight="/docs/light/terminology-url-anatomy.png"
-  srcDark="/docs/dark/terminology-url-anatomy.png"
-  width="1600"
-  height="371"
-/>
-
-- **URL Segment:** Part of the URL path delimited by slashes.
-- **URL Path:** Part of the URL that comes after the domain (composed of segments).
+- **Tree:** 一种用于可视化层次结构的约定。例如，包含父组件和子组件的组件树、文件夹结构等。
+- **Subtree:** Tree 的一部分,始于新的根节点(first),终于叶子结点(last)
+- **Root**: tree 或 subtree 的首个节点
+- **Leaf:** 子树中没有子节点的节点.例如 URL 路径中的最后一段。
 
 ## The `app` Router
 
-In version 13, Next.js introduced a new **App Router** built on [React Server Components](/docs/getting-started/react-essentials#server-components), which supports shared layouts, nested routing, loading states, error handling, and more.
+在 Next.js 13 版本中, Next.js 引入了新的 **App Router** ,基于服务器组件,支持共享布局、嵌套路由、加载状态、错误处理等。
 
-The App Router works in a new directory named `app`. The `app` directory works alongside the `pages` directory to allow for incremental adoption. This allows you to opt some routes of your application into the new behavior while keeping other routes in the `pages` directory for previous behavior. If your application uses the `pages` directory, please also see the [Pages Router](/docs/pages/building-your-application/routing) documentation.
+App Router 工作在一个新的名为 app 的文件夹中,`app`文件夹和`pages`文件夹一起工作,以允许增量采用.
 
-> **Good to know**: The App Router takes priority over the Pages Router. Routes across directories should not resolve to the same URL path and will cause a build-time error to prevent a conflict.
+> **Good to know**: App 路由的优先级高于 Pages,跨文件夹的路由不应该用相同的 URL,构建时会报错以避免冲突.
 
-<Image
-  alt="Next.js App Directory"
-  srcLight="/docs/light/next-router-directories.png"
-  srcDark="/docs/dark/next-router-directories.png"
-  width="1600"
-  height="444"
-/>
-
-By default, components inside `app` are [React Server Components](/docs/getting-started/react-essentials#server-components). This is a performance optimization and allows you to easily adopt them, and you can also use [Client Components](/docs/getting-started/react-essentials#client-components).
-
-> **Recommendation:** Check out the [Server and Client Components](/docs/getting-started/react-essentials) page if you're new to Server Components.
+默认情况下,在 app 路径下的组件都是服务器组件,这会让你更容易的采用这种性能优化.当然你仍然可以使用客户端组件
 
 ## Roles of Folders and Files
 
-Next.js uses a file-system based router where:
+Next.js 基于文件系统构建路由
 
-- **Folders** are used to define routes. A route is a single path of nested folders, following the file-system hierarchy from the **root folder** down to a final **leaf folder** that includes a `page.js` file. See [Defining Routes](/docs/app/building-your-application/routing/defining-routes).
-- **Files** are used to create UI that is shown for a route segment. See [special files](#file-conventions).
+- **文件夹** 用来构建路由. 在这里，“路由”指的是从根文件夹到最终的叶子文件夹的单个嵌套文件夹路径，遵循文件系统的层次结构。这个路径包含一个 page.js 文件，用于定义具体的路由页面。
+- **文件** 用来创建 UI,具体看下文的路由片段
 
 ## Route Segments
 
-Each folder in a route represents a **route segment**. Each route segment is mapped to a corresponding **segment** in a **URL path**.
-
-<Image
-  alt="How Route Segments Map to URL Segments"
-  srcLight="/docs/light/route-segments-to-path-segments.png"
-  srcDark="/docs/dark/route-segments-to-path-segments.png"
-  width="1600"
-  height="594"
-/>
+路由中的每一个文件夹表现为一个路由片段,每个路由片段都会映射到 URL 路径中的相应段。
 
 ## Nested Routes
 
-To create a nested route, you can nest folders inside each other. For example, you can add a new `/dashboard/settings` route by nesting two new folders in the `app` directory.
+你可以通过嵌套文件夹来实现嵌套路由,例如你可以通过在 app 文件夹中创建`/dashboard/settings`嵌套文件夹来实现嵌套的路由.
 
-The `/dashboard/settings` route is composed of three segments:
+`/dashboard/settings` 由三个路由片段组成
 
-- `/` (Root segment)
-- `dashboard` (Segment)
-- `settings` (Leaf segment)
+- `/` (root 片段)
+- `dashboard` (片段)
+- `settings` (叶子片段)
 
 ## File Conventions
 
-Next.js provides a set of special files to create UI with specific behavior in nested routes:
+Next.js 提供了一系列有着特别行为的用来创建 ui 的可嵌套的特殊文件
 
 |                                                                                       |                                                                                                |
 | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [`layout`](/docs/app/building-your-application/routing/pages-and-layouts#layouts)     | Shared UI for a segment and its children                                                       |
+| [`layout`](/docs/app/building-your-application/routing/pages-and-layouts#layouts)     | 为片段和它的子节点分享 UI                                                                      |
 | [`page`](/docs/app/building-your-application/routing/pages-and-layouts#pages)         | Unique UI of a route and make routes publicly accessible                                       |
 | [`loading`](/docs/app/building-your-application/routing/loading-ui-and-streaming)     | Loading UI for a segment and its children                                                      |
 | [`not-found`](/docs/app/api-reference/file-conventions/not-found)                     | Not found UI for a segment and its children                                                    |
@@ -99,11 +70,12 @@ Next.js provides a set of special files to create UI with specific behavior in n
 | [`template`](/docs/app/building-your-application/routing/pages-and-layouts#templates) | Specialized re-rendered Layout UI                                                              |
 | [`default`](/docs/app/api-reference/file-conventions/default)                         | Fallback UI for [Parallel Routes](/docs/app/building-your-application/routing/parallel-routes) |
 
-> **Good to know**: `.js`, `.jsx`, or `.tsx` file extensions can be used for special files.
+> **Good to know**: `.js`, `.jsx`, `.tsx` 文件拓展类型都可用于这些特殊文件
 
-## Component Hierarchy
+## Component Hierarchy(层级结构)
 
-The React components defined in special files of a route segment are rendered in a specific hierarchy:
+React 组件在路由片段中定义为特殊的文件名会渲染在特别的
+在路由片段的特殊文件中定义的 React 组件按照特定的层次结构进行渲染：
 
 - `layout.js`
 - `template.js`
@@ -112,29 +84,13 @@ The React components defined in special files of a route segment are rendered in
 - `not-found.js` (React error boundary)
 - `page.js` or nested `layout.js`
 
-<Image
-  alt="Component Hierarchy for File Conventions"
-  srcLight="/docs/light/file-conventions-component-hierarchy.png"
-  srcDark="/docs/dark/file-conventions-component-hierarchy.png"
-  width="1600"
-  height="643"
-/>
-
-In a nested route, the components of a segment will be nested **inside** the components of its parent segment.
-
-<Image
-  alt="Nested File Conventions Component Hierarchy"
-  srcLight="/docs/light/nested-file-conventions-component-hierarchy.png"
-  srcDark="/docs/dark/nested-file-conventions-component-hierarchy.png"
-  width="1600"
-  height="863"
-/>
+在嵌套路由中，一个路由片段的组件将嵌套在其父级路由片段的组件内部。
 
 ## Colocation
 
-In addition to special files, you have the option to colocate your own files (e.g. components, styles, tests, etc) inside folders in the `app` directory.
+除了特殊文件之外，你还可以在 app 目录的文件夹中放置你自己的文件（例如 components、styles、tests 等）。
 
-This is because while folders define routes, only the contents returned by `page.js` or `route.js` are publicly addressable.
+这是因为虽然文件夹定义了路由，但只有 page.js 或 route.js 返回的内容是可以公开访问的。也就是说，只有这些文件中定义的组件才可以通过公共的 URL 地址访问到。
 
 <Image
   alt="An example folder structure with colocated files"

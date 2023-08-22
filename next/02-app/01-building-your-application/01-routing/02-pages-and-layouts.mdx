@@ -24,28 +24,28 @@ Create your first page by adding a `page.js` file inside the `app` directory:
 ```tsx filename="app/page.tsx" switcher
 // `app/page.tsx` is the UI for the `/` URL
 export default function Page() {
-  return <h1>Hello, Home page!</h1>
+  return <h1>Hello, Home page!</h1>;
 }
 ```
 
 ```jsx filename="app/page.js" switcher
 // `app/page.js` is the UI for the `/` URL
 export default function Page() {
-  return <h1>Hello, Home page!</h1>
+  return <h1>Hello, Home page!</h1>;
 }
 ```
 
 ```tsx filename="app/dashboard/page.tsx" switcher
 // `app/dashboard/page.tsx` is the UI for the `/dashboard` URL
 export default function Page() {
-  return <h1>Hello, Dashboard Page!</h1>
+  return <h1>Hello, Dashboard Page!</h1>;
 }
 ```
 
 ```jsx filename="app/dashboard/page.js" switcher
 // `app/dashboard/page.js` is the UI for the `/dashboard` URL
 export default function Page() {
-  return <h1>Hello, Dashboard Page!</h1>
+  return <h1>Hello, Dashboard Page!</h1>;
 }
 ```
 
@@ -75,7 +75,7 @@ You can define a layout by `default` exporting a React component from a `layout.
 export default function DashboardLayout({
   children, // will be a page or nested layout
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <section>
@@ -84,103 +84,64 @@ export default function DashboardLayout({
 
       {children}
     </section>
-  )
-}
-```
-
-```jsx filename="app/dashboard/layout.js" switcher
-export default function DashboardLayout({
-  children, // will be a page or nested layout
-}) {
-  return (
-    <section>
-      {/* Include shared UI here e.g. a header or sidebar */}
-      <nav></nav>
-
-      {children}
-    </section>
-  )
+  );
 }
 ```
 
 > **Good to know**:
 >
-> - The top-most layout is called the [Root Layout](#root-layout-required). This **required** layout is shared across all pages in an application. Root layouts must contain `html` and `body` tags.
-> - Any route segment can optionally define its own [Layout](#nesting-layouts). These layouts will be shared across all pages in that segment.
-> - Layouts in a route are **nested** by default. Each parent layout wraps child layouts below it using the React `children` prop.
-> - You can use [Route Groups](/docs/app/building-your-application/routing/route-groups) to opt specific route segments in and out of shared layouts.
-> - Layouts are [Server Components](/docs/getting-started/react-essentials) by default but can be set to a [Client Component](/docs/getting-started/react-essentials#client-components).
-> - Layouts can fetch data. View the [Data Fetching](/docs/app/building-your-application/data-fetching) section for more information.
-> - Passing data between a parent layout and its children is not possible. However, you can fetch the same data in a route more than once, and React will [automatically dedupe the requests](/docs/app/building-your-application/caching#request-memoization) without affecting performance.
-> - Layouts do not have access to the current route segment(s). To access route segments, you can use [`useSelectedLayoutSegment`](/docs/app/api-reference/functions/use-selected-layout-segment) or [`useSelectedLayoutSegments`](/docs/app/api-reference/functions/use-selected-layout-segments) in a Client Component.
-> - `.js`, `.jsx`, or `.tsx` file extensions can be used for Layouts.
-> - A `layout.js` and `page.js` file can be defined in the same folder. The layout will wrap the page.
+> - 最顶层的布局被称为根布局。这是一个必需的布局，它在应用程序的所有页面中共享。根布局必须包含 html 和 body 标签。
+> - 任何路由片段都可以选择性地定义自己的布局。这些布局将在该片段的所有页面中共享。
+> - 路由中的布局默认是嵌套的。每个父布局都使用 React 的 children 属性包装其内部的子布局。
+> - 你可以使用路由分组来选择性地应用和取消应用共享布局的特定路由片段。
+> - 默认情况下，布局是服务器组件，但可以设置为客户端组件。
+> - 布局可以获取数据。查看数据获取部分获取更多信息。
+> - 父布局和子布局之间无法直接传递数据。然而，你可以在路由中多次获取相同的数据，React 会自动去重请求，而不会影响性能。
+> - 布局无法访问当前的路由片段。为了访问路由片段，你可以在客户端组件中使用 useSelectedLayoutSegment 或 useSelectedLayoutSegments。
+> - `.js`, `.jsx`, `.tsx` 文件扩展名都是可以的
+> - `layout.js` and `page.js` 文件可以在同一个文件夹中定义. 布局将包裹页面.
 
 ### Root Layout (Required)
 
-The root layout is defined at the top level of the `app` directory and applies to all routes. This layout enables you to modify the initial HTML returned from the server.
+根布局是在 app 目录的顶层定义的，并适用于所有路由。这个布局允许你修改服务器返回的初始 HTML 内容。
 
 ```tsx filename="app/layout.tsx" switcher
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body>{children}</body>
     </html>
-  )
+  );
 }
 ```
 
-```jsx filename="app/layout.js" switcher
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  )
-}
-```
+````
 
 > **Good to know**:
 >
-> - The `app` directory **must** include a root layout.
-> - The root layout must define `<html>` and `<body>` tags since Next.js does not automatically create them.
-> - You can use the [built-in SEO support](/docs/app/building-your-application/optimizing/metadata) to manage `<head>` HTML elements, for example, the `<title>` element.
-> - You can use [route groups](/docs/app/building-your-application/routing/route-groups) to create multiple root layouts. See an [example here](/docs/app/building-your-application/routing/route-groups#creating-multiple-root-layouts).
-> - The root layout is a [Server Component](/docs/getting-started/react-essentials) by default and **can not** be set to a [Client Component](/docs/getting-started/react-essentials#client-components).
-
-> **Migrating from the `pages` directory:** The root layout replaces the [`_app.js`](/docs/pages/building-your-application/routing/custom-app) and [`_document.js`](/docs/pages/building-your-application/routing/custom-document) files. [View the migration guide](/docs/app/building-your-application/upgrading/app-router-migration#migrating-_documentjs-and-_appjs).
+> - app目录必须包含一个根布局
+> - 根布局必须定义<html>和<body>标签，因为Next.js不会自动创建它们。
+> - 你可以使用内置的SEO支持来管理<head> HTML元素，例如<title>元素。
+> - 你可以使用路由分组来创建多个根布局。
+> - 根布局默认是服务器组件，不能设置成客户端组件。
 
 ### Nesting Layouts
 
-Layouts defined inside a folder (e.g. `app/dashboard/layout.js`) apply to specific route segments (e.g. `acme.com/dashboard`) and render when those segments are active. By default, layouts in the file hierarchy are **nested**, which means they wrap child layouts via their `children` prop.
-
-<Image
-  alt="Nested Layout"
-  srcLight="/docs/light/nested-layout.png"
-  srcDark="/docs/dark/nested-layout.png"
-  width="1600"
-  height="606"
-/>
+通过将布局文件放置在特定的文件夹中，你可以将它们与对应的路由片段关联起来。当路由片段处于活动状态时，这些布局将被渲染。默认情况下，布局之间是嵌套关系，父布局通过children属性包装子布局，以实现层级的布局效果。
 
 ```tsx filename="app/dashboard/layout.tsx" switcher
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  return <section>{children}</section>
+  return <section>{children}</section>;
 }
-```
-
-```jsx filename="app/dashboard/layout.js" switcher
-export default function DashboardLayout({ children }) {
-  return <section>{children}</section>
-}
-```
+````
 
 > **Good to know**:
 >
@@ -224,13 +185,13 @@ A template can be defined by exporting a default React component from a `templat
 
 ```tsx filename="app/template.tsx" switcher
 export default function Template({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>
+  return <div>{children}</div>;
 }
 ```
 
 ```jsx filename="app/template.js" switcher
 export default function Template({ children }) {
-  return <div>{children}</div>
+  return <div>{children}</div>;
 }
 ```
 
@@ -250,24 +211,24 @@ In the `app` directory, you can modify the `<head>` HTML elements such as `title
 Metadata can be defined by exporting a [`metadata` object](/docs/app/api-reference/functions/generate-metadata#the-metadata-object) or [`generateMetadata` function](/docs/app/api-reference/functions/generate-metadata#generatemetadata-function) in a [`layout.js`](/docs/app/api-reference/file-conventions/layout) or [`page.js`](/docs/app/api-reference/file-conventions/page) file.
 
 ```tsx filename="app/page.tsx" switcher
-import { Metadata } from 'next'
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Next.js',
-}
+  title: "Next.js",
+};
 
 export default function Page() {
-  return '...'
+  return "...";
 }
 ```
 
 ```jsx filename="app/page.js" switcher
 export const metadata = {
-  title: 'Next.js',
-}
+  title: "Next.js",
+};
 
 export default function Page() {
-  return '...'
+  return "...";
 }
 ```
 

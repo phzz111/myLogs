@@ -145,43 +145,27 @@ export default function DashboardLayout({
 
 > **Good to know**:
 >
-> - Only the root layout can contain `<html>` and `<body>` tags.
+> - 只有 root 的 layout 可以包含 `<html>` 和 `<body>` 标签.
 
-If you were to combine the two layouts above, the root layout (`app/layout.js`) would wrap the dashboard layout (`app/dashboard/layout.js`), which would wrap route segments inside `app/dashboard/*`.
+如果你想结合上述的两种 layout,根 layout 应该包裹 dashboard layout
 
 The two layouts would be nested as such:
 
-<Image
-  alt="Nested Layouts"
-  srcLight="/docs/light/nested-layouts-ui.png"
-  srcDark="/docs/dark/nested-layouts-ui.png"
-  width="1600"
-  height="1026"
-/>
-
-You can use [Route Groups](/docs/app/building-your-application/routing/route-groups) to opt specific route segments in and out of shared layouts.
+你可以使用 Route Groups 来选择性地将特定的路由段包含或排除在共享布局中。
 
 ## Templates
 
-Templates are similar to layouts in that they wrap each child layout or page. Unlike layouts that persist across routes and maintain state, templates create a new instance for each of their children on navigation. This means that when a user navigates between routes that share a template, a new instance of the component is mounted, DOM elements are recreated, state is **not** preserved, and effects are re-synchronized.
+模板（Templates）和布局（Layouts）类似，它们都包装每个子布局或页面。但与布局不同的是，模板会在导航时为每个子组件创建一个新的实例。这意味着当用户在共享模板的路由之间导航时，组件的新实例会被挂载，DOM 元素会被重新创建，状态不会被保留，并且效果会重新同步。
 
-There may be cases where you need those specific behaviors, and templates would be a more suitable option than layouts. For example:
+在某些情况下，你可能需要这些特定的行为，此时模板会比布局更适合。例如：
 
-- Enter/exit animations using CSS or animation libraries.
-- Features that rely on `useEffect` (e.g logging page views) and `useState` (e.g a per-page feedback form).
-- To change the default framework behavior. For example, Suspense Boundaries inside layouts only show the fallback the first time the Layout is loaded and not when switching pages. For templates, the fallback is shown on each navigation.
+- css 的进出动画
+- 一些依赖 useState,useEffect 的特性
+  通过使用模板，你可以更改框架的默认行为，并根据需要自定义路由之间的加载和显示行为。这对于需要在每次导航时展示 fallback 的情况非常有用。
 
-> **Recommendation:** We recommend using Layouts unless you have a specific reason to use Template.
+> **Recommendation:** 除非你有特别的目的,我们更推荐使用 layout
 
-A template can be defined by exporting a default React component from a `template.js` file. The component should accept a `children` prop which will be nested segments.
-
-<Image
-  alt="template.js special file"
-  srcLight="/docs/light/template-special-file.png"
-  srcDark="/docs/dark/template-special-file.png"
-  width="1600"
-  height="444"
-/>
+模版可以通过定义一个默认到处 React 组件的名为`template.js`的文件,该组件应该接受一个 children 属性用来嵌套路由片段
 
 ```tsx filename="app/template.tsx" switcher
 export default function Template({ children }: { children: React.ReactNode }) {
@@ -189,13 +173,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 }
 ```
 
-```jsx filename="app/template.js" switcher
-export default function Template({ children }) {
-  return <div>{children}</div>;
-}
-```
-
-The rendered output of a route segment with a layout and a template will be as such:
+具有布局和模板的渲染结果输出如下所示：
 
 ```jsx filename="Output"
 <Layout>
@@ -206,9 +184,7 @@ The rendered output of a route segment with a layout and a template will be as s
 
 ## Modifying `<head>`
 
-In the `app` directory, you can modify the `<head>` HTML elements such as `title` and `meta` using the [built-in SEO support](/docs/app/building-your-application/optimizing/metadata).
-
-Metadata can be defined by exporting a [`metadata` object](/docs/app/api-reference/functions/generate-metadata#the-metadata-object) or [`generateMetadata` function](/docs/app/api-reference/functions/generate-metadata#generatemetadata-function) in a [`layout.js`](/docs/app/api-reference/file-conventions/layout) or [`page.js`](/docs/app/api-reference/file-conventions/page) file.
+在`app`文件路径中,如果想给<head>标签设置 title , meta 等信息, 你可以通过在 layout/page 文件中导出一个`metadata`对象或使用`generateMetadata`方法来定义 head 属性
 
 ```tsx filename="app/page.tsx" switcher
 import { Metadata } from "next";
@@ -222,16 +198,6 @@ export default function Page() {
 }
 ```
 
-```jsx filename="app/page.js" switcher
-export const metadata = {
-  title: "Next.js",
-};
-
-export default function Page() {
-  return "...";
-}
-```
-
-> **Good to know**: You should **not** manually add `<head>` tags such as `<title>` and `<meta>` to root layouts. Instead, you should use the [Metadata API](/docs/app/api-reference/functions/generate-metadata) which automatically handles advanced requirements such as streaming and de-duplicating `<head>` elements.
+你不应该手动添加<head>标签，例如<title>和<meta>到根布局中。相反，你应该使用 Metadata API，它会自动处理高级需求，如流式传输和去重<head>元素。
 
 [Learn more about available metadata options in the API reference.](/docs/app/api-reference/functions/generate-metadata)

@@ -9,29 +9,25 @@ related:
     - app/api-reference/functions/generate-static-params
 ---
 
-When you don't know the exact segment names ahead of time and want to create routes from dynamic data, you can use Dynamic Segments that are filled in at request time or [prerendered](#generating-static-params) at build time.
+当您不知道确切的路由片段名称并且想要根据动态数据创建路由时, 你可以在请求时间或构建时间使用动态路由填充
 
-## Convention
+## Convention (约定)
 
-A Dynamic Segment can be created by wrapping a folder's name in square brackets: `[folderName]`. For example, `[id]` or `[slug]`.
+动态路由被创建在用中括号包裹的名称的文件夹里`[folderName]`,例如`[id]` / `[slug]
 
-Dynamic Segments are passed as the `params` prop to [`layout`](/docs/app/api-reference/file-conventions/layout), [`page`](/docs/app/api-reference/file-conventions/page), [`route`](/docs/app/building-your-application/routing/route-handlers), and [`generateMetadata`](/docs/app/api-reference/functions/generate-metadata#generatemetadata-function) functions.
+Dynamic Segments 被作为 params 属性传递给 layout，page，route 和 generateMetadata 函数。
 
 ## Example
 
-For example, a blog could include the following route `app/blog/[slug]/page.js` where `[slug]` is the Dynamic Segment for blog posts.
+例如,一个博客在如下路由中,`app/blog/[slug]/page.js`,slug 就是用来表示具体博客的动态路由
 
 ```tsx filename="app/blog/[slug]/page.tsx" switcher
 export default function Page({ params }: { params: { slug: string } }) {
-  return <div>My Post: {params.slug}</div>
+  return <div>My Post: {params.slug}</div>;
 }
 ```
 
-```jsx filename="app/blog/[slug]/page.js" switcher
-export default function Page({ params }) {
-  return <div>My Post: {params.slug}</div>
-}
-```
+````
 
 | Route                     | Example URL | `params`        |
 | ------------------------- | ----------- | --------------- |
@@ -39,45 +35,31 @@ export default function Page({ params }) {
 | `app/blog/[slug]/page.js` | `/blog/b`   | `{ slug: 'b' }` |
 | `app/blog/[slug]/page.js` | `/blog/c`   | `{ slug: 'c' }` |
 
-See the [generateStaticParams()](#generating-static-params) page to learn how to generate the params for the segment.
-
-> **Good to know**: Dynamic Segments are equivalent to [Dynamic Routes](/docs/app/building-your-application/routing/dynamic-routes) in the `pages` directory.
+> **Good to know**: 在pages路径下,动态路由片段等价于动态路由
 
 ## Generating Static Params
 
-The `generateStaticParams` function can be used in combination with [dynamic route segments](/docs/app/building-your-application/routing/dynamic-routes) to [**statically generate**](/docs/app/building-your-application/rendering/static-and-dynamic#static-rendering-default) routes at build time instead of on-demand at request time.
+generateStaticParams函数可以与动态路由片段结合使用，在构建时间静态生成路由，而不是在请求时间按需生成。
 
 ```tsx filename="app/blog/[slug]/page.tsx" switcher
 export async function generateStaticParams() {
-  const posts = await fetch('https://.../posts').then((res) => res.json())
+  const posts = await fetch("https://.../posts").then((res) => res.json());
 
   return posts.map((post) => ({
     slug: post.slug,
-  }))
+  }));
 }
-```
+````
 
-```jsx filename="app/blog/[slug]/page.js" switcher
-export async function generateStaticParams() {
-  const posts = await fetch('https://.../posts').then((res) => res.json())
+generateStaticParams 函数的主要优点是其智能的数据检索。如果在 generateStaticParams 函数中使用 fetch 请求获取内容，这些请求将被自动记忆。这意味着在多个 generateStaticParams、布局（Layouts）和页面（Pages）中，具有相同参数的 fetch 请求只会被执行一次，从而减少了构建时间。
 
-  return posts.map((post) => ({
-    slug: post.slug,
-  }))
-}
-```
-
-The primary benefit of the `generateStaticParams` function is its smart retrieval of data. If content is fetched within the `generateStaticParams` function using a `fetch` request, the requests are [automatically memoized](/docs/app/building-your-application/caching#request-memoization). This means a `fetch` request with the same arguments across multiple `generateStaticParams`, Layouts, and Pages will only be made once, which decreases build times.
-
-Use the [migration guide](/docs/app/building-your-application/upgrading/app-router-migration#dynamic-paths-getstaticpaths) if you are migrating from the `pages` directory.
-
-See [`generateStaticParams` server function documentation](/docs/app/api-reference/functions/generate-static-params) for more information and advanced use cases.
+有关更多信息和高级用例，请参阅 generateStaticParams 服务器函数文档。
 
 ## Catch-all Segments
 
-Dynamic Segments can be extended to **catch-all** subsequent segments by adding an ellipsis inside the brackets `[...folderName]`.
+通过在括号内添加省略号[...folderName]，可以将动态片段扩展为捕获所有后续片段。
 
-For example, `app/shop/[...slug]/page.js` will match `/shop/clothes`, but also `/shop/clothes/tops`, `/shop/clothes/tops/t-shirts`, and so on.
+例如, `app/shop/[...slug]/page.js` 会匹配 `/shop/clothes`, `/shop/clothes/tops`, `/shop/clothes/tops/t-shirts`, 等等
 
 | Route                        | Example URL   | `params`                    |
 | ---------------------------- | ------------- | --------------------------- |
@@ -87,11 +69,11 @@ For example, `app/shop/[...slug]/page.js` will match `/shop/clothes`, but also `
 
 ## Optional Catch-all Segments
 
-Catch-all Segments can be made **optional** by including the parameter in double square brackets: `[[...folderName]]`.
+通过在双方括号中包含参数，可以使捕获所有片段变为可选，例如：[[...folderName]]。
 
-For example, `app/shop/[[...slug]]/page.js` will **also** match `/shop`, in addition to `/shop/clothes`, `/shop/clothes/tops`, `/shop/clothes/tops/t-shirts`.
+例如, `app/shop/[[...slug]]/page.js` 也将匹配 `/shop`, 还有 `/shop/clothes`, `/shop/clothes/tops`, `/shop/clothes/tops/t-shirts`.
 
-The difference between **catch-all** and **optional catch-all** segments is that with optional, the route without the parameter is also matched (`/shop` in the example above).
+捕获所有片段和可选捕获所有片段的区别在于，对于可选捕获所有片段，也会匹配没有该参数的路由（在上面的示例中是/shop）。
 
 | Route                          | Example URL   | `params`                    |
 | ------------------------------ | ------------- | --------------------------- |
@@ -102,17 +84,11 @@ The difference between **catch-all** and **optional catch-all** segments is that
 
 ## TypeScript
 
-When using TypeScript, you can add types for `params` depending on your configured route segment.
+在使用 TypeScript 时，您可以根据您配置的路由片段为 params 添加类型。
 
 ```tsx filename="app/blog/[slug]/page.tsx" switcher
 export default function Page({ params }: { params: { slug: string } }) {
-  return <h1>My Page</h1>
-}
-```
-
-```jsx filename="app/blog/[slug]/page.js" switcher
-export default function Page({ params }) {
-  return <h1>My Page</h1>
+  return <h1>My Page</h1>;
 }
 ```
 
@@ -122,4 +98,4 @@ export default function Page({ params }) {
 | `app/shop/[...slug]/page.js`        | `{ slug: string[] }`                     |
 | `app/[categoryId]/[itemId]/page.js` | `{ categoryId: string, itemId: string }` |
 
-> **Good to know**: This may be done automatically by the [TypeScript plugin](/docs/app/building-your-application/configuring/typescript#typescript-plugin) in the future.
+> **Good to know**:在将来，TypeScript 插件可能会自动完成此操作。
